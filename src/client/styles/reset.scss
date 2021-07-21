@@ -1,0 +1,38 @@
+body {
+	font-family: 'Montserrat', sans-serif;
+	margin: 0;
+	min-width: 310px;
+}
+h1 {
+	text-align: center;
+	font-size: 5em;
+	background-color: rgba(252, 214, 112, 0.1);
+}
+header {
+	margin: 0;
+}
+.title {
+	font-size: 35px;
+}
+label,
+input,
+textarea {
+	font-size: 20px;
+	margin: 8px;
+}
+.bigcontainer {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	grid-template-rows: auto;
+	grid-template-areas: 'l r';
+}
+#formcontainer,
+.entry {
+	margin: 15px;
+}
+#forcontainer {
+	grid-area: l;
+}
+.entry {
+	grid-area: r;
+}

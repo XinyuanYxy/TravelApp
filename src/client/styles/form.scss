@@ -1,0 +1,51 @@
+$backgroundColor: rgba(252, 214, 112, 0.2);
+$inverse-background-color: rgb(65, 61, 50);
+$font-color: rgb(252, 214, 112);
+@mixin btn($bg, $font_color) {
+	background-color: $bg;
+	border: 2px solid $font_color;
+	border-radius: 0.5em;
+	margin: 10px 0;
+	padding: 5px;
+	width: 200px;
+	height: 40px;
+	font-size: 1.5em;
+	&:hover {
+		cursor: pointer;
+	}
+}
+
+#formcontainer {
+	background-color: rgba(252, 214, 112, 0.2);
+	border: 2px solid black;
+	padding: 10px;
+	// width: 50%;
+}
+
+// .general {
+// 	display: flex;
+// 	.whenwhere {
+// 		display: flex;
+// 		flex-direction: column;
+// 		margin-left: 40px;
+// 		justify-content: center;
+// 	}
+// }
+.flight,
+.lodging,
+.items,
+.notes {
+	display: flex;
+	flex-direction: column;
+}
+.btn {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#generate {
+	@include btn($backgroundColor, $font-color);
+	&:hover {
+		@include btn($font-color, $backgroundColor);
+	}
+}
