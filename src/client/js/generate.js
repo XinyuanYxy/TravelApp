@@ -1,30 +1,30 @@
-function handleSubmit(event) {
+async function handleSubmit(event) {
 	event.preventDefault();
 	const generate = document.getElementById('generate');
-	console.log('i clicked');
-	const city = document.getElementById('city');
-	const country = document.getElementById('country');
-	const time = document.getElementById('time');
-	const fTime = document.getElementById('flighttime');
-	const fNum = document.getElementById('flightnumber');
-	const fDes = document.getElementById('flightdes');
-	const lodging = document.getElementById('lodging');
-	const items = document.getElementById('items');
-	const notes = document.getElementById('notes');
-	const weatherData = Client.retrieveData(city);
-	consolo.log(weatherData);
-	generateCard(
-		city,
-		country,
-		time,
-		ftime,
-		fNum,
-		fDes,
-		lodging,
-		items,
-		notes,
-		weatherData
-	);
+	const city = document.getElementById('city').value;
+	const country = document.getElementById('country').value;
+	const time = document.getElementById('time').value;
+	const fTime = document.getElementById('flighttime').value;
+	const fNum = document.getElementById('flightnumber').value;
+	const fDes = document.getElementById('flightdes').value;
+	const lodging = document.getElementById('lodging').value;
+	const items = document.getElementById('items').value;
+	const notes = document.getElementById('notes').value;
+	(await Client.retrieveData(city)).then((data) => {
+		console.log(data);
+		generateCard(
+			city,
+			country,
+			time,
+			fTime,
+			fNum,
+			fDes,
+			lodging,
+			items,
+			notes,
+			data
+		);
+	});
 }
 
 const generateCard = (...args) => {
@@ -87,7 +87,6 @@ const generateCountdown = (time) => {
 
 const addUlDeleteEditEL = () => {
 	ul.addEventListener('click', (evt) => {
-		console.log('From client side, i clicked');
 		if (evt.target.tagName === 'BUTTON') {
 			const btn = evt.target;
 			const li = btn.parentNode;
