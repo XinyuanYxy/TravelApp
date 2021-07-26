@@ -10,58 +10,88 @@ async function handleSubmit(event) {
 	const lodging = document.getElementById('lodging').value;
 	const items = document.getElementById('items').value;
 	const notes = document.getElementById('notes').value;
-	(await Client.retrieveData(city)).then((data) => {
-		console.log(data);
-		generateCard(
-			city,
-			country,
-			time,
-			fTime,
-			fNum,
-			fDes,
-			lodging,
-			items,
-			notes,
-			data
-		);
-	});
+	const userInput = {
+		city,
+		country,
+		time,
+		fTime,
+		fNum,
+		fDes,
+		lodging,
+		items,
+		notes,
+	};
+	console.log('sending data to server from clientside');
+	await axios.post('/add', userInput);
+	console.log('retrieving data');
+	const storage = await Client.retrieveData(city);
+	generateCard(storage);
 }
 
-const generateCard = (...args) => {
+const generateCard = (obj = {}) => {
 	//delete button, edit button
-	addUlDeleteEditEL();
 	const planlist = document.getElementById('planlist');
+	addUlDeleteEditEL(planlist);
 	let list = document.createElement('li');
 	let total = document.getElementById('planlist').childElementCount;
 	list.innerHTML = `<div class="card" >
 	<h3>Days left: </h3>
-	<div id="countdown$"+${total + 1}> ${generateCountdown(args[2])}</div>
+	<div id="countdown${total + 1}"> ${
+		generateCountdown(obj.time) === undefined
+			? 'no countdown'
+			: generateCountdown(obj.time)
+	}</div>
 	<h3>Depart Time: </h3>
-	<div id="date"+${total + 1}>${args[2]}</div>
+	<div id="time${total + 1}"> ${
+		obj.time === '' ? 'You have not put any depart time yet' : obj.time
+	}
+	 </div>
 	<h3>City: </h3>
-	<div id="city"+${total + 1}>${args[0]}</div>
+	<div id="city${total + 1}">${
+		obj.city === '' ? 'you have not put city yet' : obj.city
+	} </div>
 	<h3>Country: </h3>
-	<div id="country"+${total + 1}>${args[1]}</div>
+	<div id="country${total + 1}">${
+		obj.country === '' ? 'you have not put country yet' : obj.country
+	}</div>
 	<h3>Temperature Now: </h3>
-	<div id="temp"+${total + 1}>${args[9].currentWeather}</div>
+	<div id="temp${total + 1}">${
+		obj.currentWeather === undefined
+			? 'you have not put city yet'
+			: obj.currentWeather
+	}</div>
 	<h3>Temperature In Future: </h3>
-	<div id="temp"+${total + 1}>${args[9].futureWeather}</div>
-	<h3>Temperature Now: </h3>
-	<div id="temp"+${total + 1}>${args[9].currentWeather}</div>
+	<div id="temp${total + 1}"> ${
+		obj.futureWeather === undefined
+			? 'you have not put city yet'
+			: obj.futureWeather
+	}</div>
 	<h3>Flight Time: </h3>
-	<div id="ftime"+${total + 1}>${args[3]} </div>
+	<div id="ftime${total + 1}">${
+		obj.fTime === '' ? 'you have not put flight time yet' : obj.fTime
+	} </div>
 	<h3>Flight Number: </h3>
-	<div id="fnum"+${total + 1}>${args[4]}</div>
+	<div id="fnum${total + 1}">${
+		obj.fNum === '' ? 'you have not put flight number yet' : obj.fNum
+	}</div>
 	<h3>Flight Destination: </h3>
-	<div id="fdes"+${total + 1}>${args[5]}</div>
+	<div id="fdes${total + 1}">${
+		obj.fDes === '' ? 'you have not put flight destination yet' : obj.fDes
+	}</div>
 	<h3>Lodging: </h3>
-	<div id="lodging"+${total + 1}>Lodging: ${args[6]}</div>
+	<div id="lodging${total + 1}">${
+		obj.lodging === '' ? 'you have not put lodging yet' : obj.lodging
+	}</div>
 	<h3>Items: </h3>
-	<div id="items"+${total + 1}>Items: ${args[7]}</div>
+	<div id="items${total + 1}">${
+		obj.items === '' ? 'you have not put items yet' : obj.items
+	}</div>
 	<h3>Notes: </h3>
-	<div id="notes"+${total + 1}>Notes: ${args[8]}</div>
-	<button> Edit </button>
-	<button> Delete </button>
+	<div id="notes${total + 1}">${
+		obj.notes === '' ? 'you have not put notes yet' : obj.notes
+	}</div>
+	<button>Edit</button>
+	<button>Delete</button>
     </div>
 	`;
 	planlist.appendChild(list);
@@ -76,31 +106,47 @@ const generateCountdown = (time) => {
 		let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
 		let seconds = Math.floor((distance % (1000 * 60)) / 1000);
 		// Display the result in the element with id="demo"
-		document.getElementById('countdown').innerHTML =
-			days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's ';
+
 		if (distance < 0) {
 			clearInterval(x);
-			document.getElementById('demo').innerHTML = 'EXPIRED';
+			return 'EXPIRED';
 		}
+		return `${days} d ${hours} h ${minutes} m ${seconds} s`;
 	}, 1000);
 };
 
-const addUlDeleteEditEL = () => {
-	ul.addEventListener('click', (evt) => {
+const addUlDeleteEditEL = (ele) => {
+	ele.addEventListener('click', (evt) => {
 		if (evt.target.tagName === 'BUTTON') {
 			const btn = evt.target;
 			const li = btn.parentNode;
+			console.log(li);
 			const ul = li.parentNode;
+			console.log(ul);
 			const children = li.childNodes;
+			console.log(btn.textContent === 'Edit');
+			const numOfli = ul.childElementCount;
 			if (btn.textContent === 'Delete') {
+				console.log('clicked delete');
 				ul.removeChild(li);
 			} else if (btn.textContent === 'Edit') {
-				for (let i = 2; i < children.length; i++) {
-					if (children[i].nodeName === 'DIV') {
-						let input = documentj.createElement('input');
-						input.type = 'text';
-						input.value = children[i].textContent;
-						li.removeChild(children[i]);
+				console.log('clicked edit');
+				console.log(children);
+				for (let i = 3; i < children.length; i++) {
+					let child = children[i];
+					if (child.nodeName === 'DIV') {
+						console.log('nodename===div clause');
+						let input = document.createElement('input');
+						console.log(child.id === 'time' + numOfli || 'ftime' + numOfli);
+						if (child.id === ('time' + numOfli || 'ftime' + numOfli)) {
+							input.type = 'date';
+						} else {
+							input.type = 'text';
+							input.value = children[i].textContent;
+						}
+
+						li.insertBefore(input, children[i]);
+						console.log(li.removeChild(child));
 					}
 				}
 				btn.textContent = 'Save';

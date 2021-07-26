@@ -21,57 +21,73 @@ app.get('/', async (req, res) => {
 	res.sendFile(path.resolve('dist/index.html'));
 });
 
-app.post('/weather/:city', async (req, res) => {
+app.post('/add', async (req, res) => {
+	Object.assign(storage, req.body);
+	res.send('data received');
+});
+
+app.get('/getStorageData', async (req, res) => {
+	const city = storage.city;
 	try {
-		const city = req.params.city;
-		console.log('server side getting weather');
-		await getGeoNames(city).then(async (data) => {
-			let currentWeatherData = await axios.post(
-				`https://api.weatherbit.io/v2.0/current?lat=${data.lat}&lon=${data.lng}&key=${process.env.APIKEYWeatherbit}`
-			);
-			let futureWeatherData = await axios.post(
-				`https://api.weatherbit.io/v2.0/forecast/daily?lat=${data.lat}&lon=${data.lng}&key=${process.env.APIKEYWeatherbit}`
-			);
-			let futureWeatherTemp = futureWeatherData.data.map((data) => ({
-				date: data.datetime,
-				low_temp: low_temp,
-				max_temp: max_temp,
-			}));
-			res.send({
-				currentWeather: currentWeatherData.data.temp,
-				currentDate: new Date().getDate(),
-				futureWeather: futureWeatherTemp,
-			});
-		});
+		const weather = await getWeather(city);
+		const image = await getImage(city);
+		res.send(storage);
 	} catch (err) {
 		console.log(err);
 	}
 });
-app.get('/imageofTheCity/:city', async (req, res) => {
+
+const getWeather = async (city) => {
 	try {
-		const city = req.params.city;
+		const geoData = await getGeoNames(city);
+		console.log('weather geoname data');
+
+		let currentWeatherData = await axios.post(
+			`https://api.weatherbit.io/v2.0/current?lat=${geoData.lat}&lon=${geoData.lng}&key=${process.env.APIKEYWeatherbit}`
+		);
+		let futureWeatherData = await axios.post(
+			`https://api.weatherbit.io/v2.0/forecast/daily?lat=${geoData.lat}&lon=${geoData.lng}&key=${process.env.APIKEYWeatherbit}`
+		);
+
+		let futureWeatherTemp = futureWeatherData.data.data.map(
+			(obj) =>
+				`date: ${obj.datetime},
+			low_temp: ${obj.low_temp},
+			max_temp: ${obj.max_temp},
+	`
+		);
+		Object.assign(storage, {
+			currentWeather: currentWeatherData.data.data[0].temp,
+			futureWeather: futureWeatherTemp,
+		});
+		console.log('donegettingweather');
+	} catch (err) {
+		console.log(err);
+	}
+};
+
+const getImage = async (city) => {
+	try {
 		const url = `https://pixabay.com/api/?key=${process.env.APIKEYPixably}&q=${city}&image_type=photo`;
 		const data = await axios.get(url);
-		res.send(data);
+		const image = data.data.hits[0].largeImageURL;
+		console.log('done getting image');
+		Object.assign(storage, { image });
 	} catch (err) {
 		console.log(err);
 	}
-});
+};
 const getGeoNames = async (city) => {
 	console.log('im in getgeoname');
-	const url = `http://api.geonames.org/searchJSON?q=${city}&maxRows=1&username=${process.env.userName}`;
+	const url = `http://api.geonames.org/searchJSON?q=${city}&maxRows=10&username=${process.env.userName}`;
 	try {
-		const data = await axios.get(url).then((res) => {
-			console.log('geonamedata!');
-			console.log({
-				lat: res.data.geonames[0].lat,
-				lng: res.data.geonames[0].lng,
-			});
-			return {
-				lat: res.data.geonames[0].lat,
-				lng: res.data.geonames[0].lng,
-			};
-		});
+		const geoData = await axios.get(url);
+		const reply = geoData.data;
+		console.log('Donegeonamedata!');
+		return {
+			lat: reply.geonames[0].lat,
+			lng: reply.geonames[0].lng,
+		};
 	} catch (err) {
 		console.log(err);
 	}
