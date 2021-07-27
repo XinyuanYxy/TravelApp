@@ -21,23 +21,37 @@ app.get('/', async (req, res) => {
 	res.sendFile(path.resolve('dist/index.html'));
 });
 
-app.post('/add', async (req, res) => {
-	Object.assign(storage, req.body);
+app.post('/add/:id', async (req, res) => {
+	const id = req.params.id;
+	console.log(id);
+	storage[`${id}`] = req.body;
+	console.log(storage);
 	res.send('data received');
 });
 
-app.get('/getStorageData', async (req, res) => {
-	const city = storage.city;
+app.get('/getStorageData/:id', async (req, res) => {
+	const id = req.params.id;
+	const city = storage[`${id}`].city;
 	try {
-		const weather = await getWeather(city);
-		const image = await getImage(city);
-		res.send(storage);
+		const weather = await getWeather(id, city);
+		const image = await getImage(id, city);
+		res.send(storage[`${id}`]);
+	} catch (err) {
+		console.log(err);
+	}
+});
+app.get('/getWeather/:id/:city', async (req, res) => {
+	const id = req.params.id;
+	const city = storage[`${id}`].city;
+	try {
+		const weather = await getWeather(id, city);
+		res.send(storage[`${id}`]);
 	} catch (err) {
 		console.log(err);
 	}
 });
 
-const getWeather = async (city) => {
+const getWeather = async (id, city) => {
 	try {
 		const geoData = await getGeoNames(city);
 		console.log('weather geoname data');
@@ -51,12 +65,13 @@ const getWeather = async (city) => {
 
 		let futureWeatherTemp = futureWeatherData.data.data.map(
 			(obj) =>
-				`date: ${obj.datetime},
-			low_temp: ${obj.low_temp},
-			max_temp: ${obj.max_temp},
-	`
+				`date: ${obj.datetime} <br>
+			low_temp: ${obj.low_temp} Ccelsius<br>
+			max_temp: ${obj.max_temp} celsius<br>
+			<br>
+		`
 		);
-		Object.assign(storage, {
+		Object.assign(storage[`${id}`], {
 			currentWeather: currentWeatherData.data.data[0].temp,
 			futureWeather: futureWeatherTemp,
 		});
@@ -66,13 +81,13 @@ const getWeather = async (city) => {
 	}
 };
 
-const getImage = async (city) => {
+const getImage = async (id, city) => {
 	try {
 		const url = `https://pixabay.com/api/?key=${process.env.APIKEYPixably}&q=${city}&image_type=photo`;
 		const data = await axios.get(url);
 		const image = data.data.hits[0].largeImageURL;
 		console.log('done getting image');
-		Object.assign(storage, { image });
+		Object.assign(storage[id], { image });
 	} catch (err) {
 		console.log(err);
 	}

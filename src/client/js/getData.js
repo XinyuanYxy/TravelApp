@@ -1,7 +1,6 @@
-const retrieveData = async () => {
+const retrieveData = async (id) => {
 	try {
-		console.log('im in retrieveing data funciton clientside');
-		const data = await axios.get('/getStorageData');
+		const data = await axios.get(`/getStorageData/${id}`);
 		return data.data;
 	} catch (err) {
 		console.log(err);

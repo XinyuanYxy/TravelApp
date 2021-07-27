@@ -1,8 +1,33 @@
+$backgroundColor: rgba(252, 214, 112, 0.2);
+$inverse-background-color: rgb(65, 61, 50);
+$font-color: rgb(252, 214, 112);
+@mixin btn($bg, $font_color) {
+	background-color: $bg;
+	border: 2px solid $font_color;
+	border-radius: 0.5em;
+	margin: 10px 0;
+	padding: 5px;
+	width: 150px;
+	height: 40px;
+	font-size: 1.5em;
+	&:hover {
+		cursor: pointer;
+	}
+}
 li {
 	list-style: none;
-	padding: 5px;
 }
 .card {
+	padding: 0 5px;
 	border: 1px solid black;
-	background-color: rgb(252, 214, 112);
+	background-color: rgba(252, 214, 112, 0.6);
+	h5 {
+		margin: 3px 0;
+	}
+	button {
+		@include btn($backgroundColor, $font-color);
+		&:hover {
+			@include btn($font-color, $backgroundColor);
+		}
+	}
 }
