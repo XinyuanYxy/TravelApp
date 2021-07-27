@@ -25,7 +25,6 @@ app.post('/add/:id', async (req, res) => {
 	const id = req.params.id;
 	console.log(id);
 	storage[`${id}`] = req.body;
-	console.log(storage);
 	res.send('data received');
 });
 

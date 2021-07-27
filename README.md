@@ -9,7 +9,7 @@
 ## General info
 
 This project is a travel plan keeper prototype from Udacity.
-Used Webpack build tool and Sass.
+Used Webpack build tool and Sass and testing tool Jest.
 Consumed three APIs.
 
 ## Dependencies
@@ -35,6 +35,7 @@ Consumed three APIs.
   "terser-webpack-plugin": "^5.1.4",
   "webpack-dev-server": "^3.11.2",
   "webpack-merge": "^5.8.0"
+  "workbox-webpack-plugin": "^6.1.5"
 
 ## References
 

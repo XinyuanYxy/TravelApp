@@ -1,15 +1,14 @@
-let timer;
+let timer = {};
 async function handleSubmit(event) {
 	event.preventDefault();
 	postFormData();
 	const planlist = document.getElementById('planlist');
 	const id = document.getElementById('planlist').childElementCount + 1;
 	const storage = await Client.retrieveData(id);
-
 	const list = generateCard(id, storage);
 	planlist.appendChild(list);
-
 	generateCountdown(storage.time, id);
+	document.getElementById(`img${id}`).src = storage.image;
 }
 
 const generateCard = (id, obj = {}) => {
@@ -24,7 +23,7 @@ const generateCountdown = (time, id) => {
 	const cardCountdown = document.getElementById(`cardcountdown${id}`);
 	cardCountdown.innerHTML = 'counting';
 	if (countDownDate) {
-		let timer = setInterval(function () {
+		timer['${id}'] = setInterval(function () {
 			let now = new Date().getTime();
 			let distance = countDownDate - now;
 			let days = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -47,6 +46,7 @@ const generateCountdown = (time, id) => {
 
 const generateHtml = (id, obj = {}) => {
 	return `<div id = "${id}" class="card" >
+	<div ><img id = "img${id}" alt="no img since you have not put city yet"> </div>
 	<h5>Days left: </h5>
 	<div id="cardcountdown${id}"> Counting... </div>
 	<h5>Depart Time: </h5>
@@ -56,7 +56,7 @@ const generateHtml = (id, obj = {}) => {
 	 </div>
 	<h5>City: </h5>
 	<div id="cardcity${id}">${
-		obj.city === '' ? 'you have not put city yet' : obj.city
+		obj.city === '' ? 'you have not put city yet ' : obj.city
 	} </div>
 	<h5>Country: </h5>
 	<div id="cardcountry${id}">${
@@ -65,13 +65,13 @@ const generateHtml = (id, obj = {}) => {
 	<h5>Temperature Now: </h5>
 	<div id="cardcurtemp${id}">${
 		obj.currentWeather === undefined
-			? 'you have not put city yet'
+			? 'you have not put city yet or check your spelling'
 			: obj.currentWeather
 	}</div>
 	<h5>Temperature In Future: </h5>
 	<div id="cardfuturetemp${id}"> ${
 		obj.futureWeather === undefined
-			? 'you have not put city yet'
+			? 'you have not put city yet or check your spelling'
 			: obj.futureWeather
 	}</div>
 	<h5>Flight Time: </h5>
@@ -98,10 +98,16 @@ const generateHtml = (id, obj = {}) => {
 	<div id="cardnotes${id}">${
 		obj.notes === '' ? 'you have not put notes yet' : obj.notes
 	}</div>
+	<div id = "cardbtn${id}">
 	<button>Edit</button>
 	<button>Delete</button>
+	</div>
+
     </div>
 	`;
+};
+const sendData = async (id, obj = {}) => {
+	await axios.post(`/add/${id}`, obj);
 };
 const postFormData = async () => {
 	const city = document.getElementById('city').value;
@@ -126,7 +132,7 @@ const postFormData = async () => {
 		items,
 		notes,
 	};
-	await axios.post(`/add/${id}`, userInput);
+	sendData(id, userInput);
 };
 const postCardData = async (id) => {
 	const cardList = document.getElementById('id');
@@ -150,7 +156,7 @@ const postCardData = async (id) => {
 		items,
 		notes,
 	};
-	await axios.post(`/add/${id}`, userInput);
+	sendData(id, userInput);
 };
 export {
 	handleSubmit,
@@ -160,4 +166,5 @@ export {
 	postFormData,
 	generateHtml,
 	timer,
+	sendData,
 };

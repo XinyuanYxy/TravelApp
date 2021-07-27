@@ -5,7 +5,7 @@ $font-color: rgb(252, 214, 112);
 	background-color: $bg;
 	border: 2px solid $font_color;
 	border-radius: 0.5em;
-	margin: 10px 0;
+	margin: 20px 0;
 	padding: 5px;
 	width: 200px;
 	height: 40px;
@@ -19,6 +19,7 @@ $font-color: rgb(252, 214, 112);
 	background-color: rgba(252, 214, 112, 0.2);
 	border: 2px solid black;
 	padding: 10px;
+	border-radius: 0.5em;
 	input,
 	textarea {
 		background-color: $backgroundColor;
@@ -29,10 +30,9 @@ $font-color: rgb(252, 214, 112);
 
 .flight,
 .lodging,
-.items,
-.notes {
+.destination {
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 }
 .btn {
 	display: flex;
@@ -44,4 +44,15 @@ $font-color: rgb(252, 214, 112);
 	&:hover {
 		@include btn($font-color, $backgroundColor);
 	}
+}
+.bigtext {
+	display: flex;
+	flex-direction: row;
+}
+.items {
+	display: flex;
+	flex-direction: column;
+}
+.notes {
+	margin: 0 30px;
 }

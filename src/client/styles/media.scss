@@ -1,31 +1,5 @@
-@media (max-width: 1010px) {
-	.general {
-		display: flex;
-		flex-direction: column;
-		img {
-			width: auto !important;
-		}
-		.whenwhere {
-			margin-left: 0 !important;
-		}
-	}
+@media (max-width: 1200px) {
 }
 
 @media (max-width: 810px) {
-	.bigcontainer {
-		display: grid;
-		grid-template-columns: auto;
-		grid-template-rows: auto;
-		grid-template-areas: 'l' 'r';
-	}
-	#formcontainer,
-	.entry {
-		margin: 15px;
-	}
-	#forcontainer {
-		grid-area: l;
-	}
-	.entry {
-		grid-area: r;
-	}
 }

@@ -20,51 +20,50 @@
 		<div class="bigcontainer">
 			<div id="formcontainer">
 				<form >
-					<div class="general">
-						<div class="whenwhere">
-							<h2>Destination: </h2>
-							<h3>City: </h3>
-							<input
-								type="text"
-								id="city"
-								name="city"
-								placeholder="Enter city here"
-							/>
-							<h3>Country: </h3>
-							<input
-								type="text"
-								id="country"
-								name="country"
-								placeholder="Enter country here"	
-							/>
-							<h2>Departure Time: </h2>
-							<input type="date" id="time" name = "time" />
-						</div>
-	
+					<div><h2>Destination: </h2></div>
+					<div class="destination">
+						<h3>City: </h3>
+						<input
+							type="text"
+							id="city"
+							name="city"
+							placeholder="Enter city here"
+						/>
+						<h3>Country: </h3>
+						<input
+							type="text"
+							id="country"
+							name="country"
+							placeholder="Enter country here"	
+						/>
+						<h3>Departure Time: </h3>
+						<input type="date" id="time" name = "time" />
 					</div>
-		
-					<div class="flight">
-						<h2>Flight info: </h6>
-						<label for="flighttime"> Depart Time:</label>
+					<div><h2>Flight info: </h2></div>
+					<div class="flight">				
+						<h3>Depart Time: </h3>	
 						<input type="time" id="flighttime" name="flighttime"/>
-						<label for="flighttime">Flight Number:</label>
+						<h3 >Flight Number:</h3>
 						<input type="text" id="flightnumber" name="flightnumber" />
-						<label for="flightdes">Destination:</label>
+						<h3 >Destination:</h3>
 						<input type="text" id="flightdes" name = "flightdes"/>
 					</div>
 					<div class="lodging">
 						<h2>Places you will be staying</h2>
 						<input type="text" id = "lodging" name = "lodging"/>
 					</div>
-					<div class="items">
-						<h2>Things you should prepare before leaving:</h2>
-						<textarea id="items" name = "items" cols="30" rows="10"></textarea>
+					<div class="bigtext">
+						<div class="items">
+							<h2>Action Items:</h2>
+							<textarea id="items" name = "items" cols="40" rows="10"></textarea>
+						</div>
+						<div class="notes">
+							<h2>Notes: </h2>
+							<textarea id="notes" name = "notes" cols="40" rows="10"></textarea>
+						</div>
+						
 					</div>
-					<div class="note">
-						<h2>Notes: </h2>
-						<textarea id="notes" name = "notes" cols="30" rows="10"></textarea>
-					</div>
-		
+
 					<div class="btn">
 						<button id="generate" type="submit" onclick = "return Client.handleSubmit(event)">Add New Plan</button>
 					</div>
@@ -82,6 +81,15 @@
 			</div>
 	
 		</div>
+		<script>
+			// Check that service workers are supported
+			if ('serviceWorker' in navigator) {
+				// Use the window load event to keep the page load performant
+				window.addEventListener('load', () => {
+					navigator.serviceWorker.register('/service-worker.js');
+				});
+			}
+		</script> 
 	
 	
 	</body>

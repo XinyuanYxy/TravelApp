@@ -6,6 +6,7 @@ import {
 	postFormData,
 	generateHtml,
 	timer,
+	sendData,
 } from './js/generate';
 import { retrieveData } from './js/getData';
 import './js/ulEventListener';
@@ -23,4 +24,5 @@ export {
 	postFormData,
 	generateHtml,
 	timer,
+	sendData,
 };
